@@ -26,7 +26,12 @@ def check_bound(surface_rect: pg.Rect) -> tuple[bool, bool]:
 
 
 def gameover(screen: pg.Surface) -> None:
-    kkkkkk_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 0.9)
+    """
+    ゲームオーバー時に画面を暗転させ、Game Overと表示する関数
+    引数 screen: ゲーム画面のSurface
+    戻り値: なし
+    """
+    kk_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 0.9)
     fonto = pg.font.Font(None, 80)
     txt = fonto.render("Game Over", True, (255, 255, 255))
     black_out = pg.Surface((WIDTH, HEIGHT))
@@ -36,13 +41,16 @@ def gameover(screen: pg.Surface) -> None:
     screen.blit(black_out, [0, 0])
 
     screen.blit(txt, [WIDTH/2 - txt.get_width()/2, HEIGHT/2 - txt.get_height()/2])
-    screen.blit(kkkkkk_img, [WIDTH/2 - txt.get_width()/2 - kkkkkk_img.get_width() - 20, HEIGHT/2 - kkkkkk_img.get_height()/2])
-    screen.blit(kkkkkk_img, [WIDTH/2 + txt.get_width()/2 + kkkkkk_img.get_width() - 10, HEIGHT/2 - kkkkkk_img.get_height()/2])
+    screen.blit(kk_img, [WIDTH/2 - txt.get_width()/2 - kk_img.get_width() - 20, HEIGHT/2 - kk_img.get_height()/2])
+    screen.blit(kk_img, [WIDTH/2 + txt.get_width()/2 + kk_img.get_width() - 10, HEIGHT/2 - kk_img.get_height()/2])
 
     pg.display.update()
     time.sleep(5)
 
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    """
+    サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す
+    """
     accs = [a for a in range(1, 11)]
     bb_imgs = []
     for r in range(1, 11):
@@ -53,8 +61,13 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     return bb_imgs, accs
 
 def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
+    """
+    こうかとんの向きを変える関数
+    引数 sum_mv: こうかとんの移動方向の合計を表すタプル
+    戻り値: こうかとんの画像
+    """
     kk_img = pg.image.load("fig/3.png")
-    kk_img_inverted = pg.transform.flip(kk_img, True, False)  # 左右反転
+    kk_img_inverted = pg.transform.flip(kk_img, True, False)  # 左右反転ver
     angles = {(-5, 0): pg.transform.rotozoom(kk_img, 0, 0.9), 
               (-5, 5): pg.transform.rotozoom(kk_img, 45, 0.9), 
               (0, 5): pg.transform.rotozoom(kk_img_inverted, -90, 0.9), 
@@ -135,7 +148,6 @@ def main():
             vx *= -1
         if not bb_inside_y:
             vy *= -1
-
         screen.blit(bb_img, bb_rct)
 
         pg.display.update()
