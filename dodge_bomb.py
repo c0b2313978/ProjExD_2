@@ -44,16 +44,39 @@ def gameover(screen: pg.Surface) -> None:
 
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     accs = [a for a in range(1, 11)]
-
     bb_imgs = []
     for r in range(1, 11):
         bb_img = pg.Surface((20*r, 20*r))
         pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
         bb_img.set_colorkey((0, 0, 0))
         bb_imgs.append(bb_img)
-    
     return bb_imgs, accs
 
+def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
+    kk_img = pg.image.load("fig/3.png")
+    kk_img_inverted = pg.transform.flip(kk_img, True, False)  # 左右反転
+    angles = {(-5, 0): pg.transform.rotozoom(kk_img, 0, 0.9), 
+              (-5, 5): pg.transform.rotozoom(kk_img, 45, 0.9), 
+              (0, 5): pg.transform.rotozoom(kk_img_inverted, -90, 0.9), 
+              (5, 5): pg.transform.rotozoom(kk_img_inverted, -45, 0.9),
+              (5, 0): pg.transform.rotozoom(kk_img_inverted, 0, 0.9),
+              (5, -5): pg.transform.rotozoom(kk_img_inverted, 45, 0.9),
+              (0, -5): pg.transform.rotozoom(kk_img_inverted, 90, 0.9),
+              (-5, -5): pg.transform.rotozoom(kk_img, -45, 0.9),}
+    return angles[sum_mv]
+
+def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
+    dx = dst.centerx - org.centerx
+    dy = dst.centery - org.centery
+    distance = (dx**2 + dy**2)**0.5
+
+    if distance < 300:
+        return current_xy
+    else:
+        norm = (50)**0.5
+        vx = dx / distance * norm
+        vy = dy / distance * norm
+        return vx, vy
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -91,17 +114,22 @@ def main():
             if key_lst[pressing_key]:
                 sum_mv[0] += DELTA[pressing_key][0]
                 sum_mv[1] += DELTA[pressing_key][1]
-        kk_rct.move_ip(sum_mv)
-        if check_bound(kk_rct) != (True, True):
+        kk_rct.move_ip(sum_mv)  # こうかとんの移動
+        if check_bound(kk_rct) != (True, True):  # こうかとんの画面内外判定
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
+        # 飛ぶ方向に従ってこうかとん画像を切り替える
+        if tuple(sum_mv) != (0, 0):  # 押されていないときはそのまま
+            kk_img = get_kk_img(tuple(sum_mv))
         screen.blit(kk_img, kk_rct)
 
         # 爆弾の拡大加速
+        vx, vy = calc_orientation(bb_rct, kk_rct, (vx, vy))  # 追従するように
         avx = vx * bb_accs[min(tmr//500, 9)]
         avy = vy * bb_accs[min(tmr//500, 9)]
         bb_img = bb_imgs[min(tmr//500, 9)]
-        bb_rct.move_ip(avx, avy)
+        bb_rct.move_ip(avx, avy)  # 爆弾の移動
         
+        # 爆弾の衝突判定
         bb_inside_x, bb_inside_y = check_bound(bb_rct)
         if not bb_inside_x:
             vx *= -1
@@ -109,12 +137,6 @@ def main():
             vy *= -1
 
         screen.blit(bb_img, bb_rct)
-
-
-
-
-
-
 
         pg.display.update()
         tmr += 1
