@@ -8,6 +8,22 @@ WIDTH, HEIGHT = 1100, 650
 DELTA = {pg.K_UP: (0, -5), pg.K_DOWN: (0, 5), pg.K_LEFT: (-5, 0), pg.K_RIGHT: (5, 0)}
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
+def check_bound(surface_rect: pg.Rect) -> tuple[bool, bool]:
+    """
+    画面内or画面外の判定をする
+    - 引数: こうかとんRect or 爆弾Rect
+    - 戻り値: 横方向・縦方向の真理値タプル（True: 画面内 / False: 画面外）
+    """
+    screen_inside_x = True
+    screen_inside_y = True
+    if surface_rect.left < 0 or WIDTH < surface_rect.right:
+        screen_inside_x = False
+    if surface_rect.top < 0 or HEIGHT < surface_rect.bottom:
+        screen_inside_y = False
+    return screen_inside_x, screen_inside_y
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -39,12 +55,15 @@ def main():
                 sum_mv[0] += DELTA[pressing_key][0]
                 sum_mv[1] += DELTA[pressing_key][1]
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct) != (True, True):
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
 
-        # if bb_rct.centerx < 0 or bb_rct.centerx > WIDTH:
-        #     vx *= -1
-        # if bb_rct.centery < 0 or bb_rct.centerx > HEIGHT:
-        #     vy *= -1
+        bb_inside_x, bb_inside_y = check_bound(bb_rct)
+        if not bb_inside_x:
+            vx *= -1
+        if not bb_inside_y:
+            vy *= -1
         bb_rct.move_ip(vx, vy)
         screen.blit(bb_img, bb_rct)
 
