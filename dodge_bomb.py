@@ -47,6 +47,7 @@ def gameover(screen: pg.Surface) -> None:
     pg.display.update()
     time.sleep(5)
 
+
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     """
     サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す
@@ -59,6 +60,7 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
         bb_img.set_colorkey((0, 0, 0))
         bb_imgs.append(bb_img)
     return bb_imgs, accs
+
 
 def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
     """
@@ -78,6 +80,7 @@ def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
                (-5, -5): pg.transform.rotozoom(kk_img, -45, 0.9),}
     return kk_imgs[sum_mv]
 
+
 def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
     dx = dst.centerx - org.centerx
     dy = dst.centery - org.centery
@@ -90,6 +93,7 @@ def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]
         vx = dx / distance * norm
         vy = dy / distance * norm
         return vx, vy
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -153,8 +157,6 @@ def main():
         pg.display.update()
         tmr += 1
         clock.tick(50)
-
-
 
 if __name__ == "__main__":
     pg.init()
