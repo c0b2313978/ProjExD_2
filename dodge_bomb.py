@@ -116,9 +116,9 @@ def main():
                 return
         
         screen.blit(bg_img, [0, 0]) 
-        if kk_rct.colliderect(bb_rct):
+        if kk_rct.colliderect(bb_rct):  # ゲームオーバー
             gameover(screen)
-            return  # ゲームオーバー
+            return
 
         # 特定のキーが押されたときにこうかとんが移動
         key_lst = pg.key.get_pressed()
