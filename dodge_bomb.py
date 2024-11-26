@@ -82,6 +82,9 @@ def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
 
 
 def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
+    """
+    爆弾の速度ベクトル（タプル）を返す関数
+    """
     dx = dst.centerx - org.centerx
     dy = dst.centery - org.centery
     distance = (dx**2 + dy**2)**0.5
