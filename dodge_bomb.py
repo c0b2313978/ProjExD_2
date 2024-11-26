@@ -68,15 +68,15 @@ def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
     """
     kk_img = pg.image.load("fig/3.png")
     kk_img_inverted = pg.transform.flip(kk_img, True, False)  # 左右反転ver
-    angles = {(-5, 0): pg.transform.rotozoom(kk_img, 0, 0.9), 
-              (-5, 5): pg.transform.rotozoom(kk_img, 45, 0.9), 
-              (0, 5): pg.transform.rotozoom(kk_img_inverted, -90, 0.9), 
-              (5, 5): pg.transform.rotozoom(kk_img_inverted, -45, 0.9),
-              (5, 0): pg.transform.rotozoom(kk_img_inverted, 0, 0.9),
-              (5, -5): pg.transform.rotozoom(kk_img_inverted, 45, 0.9),
-              (0, -5): pg.transform.rotozoom(kk_img_inverted, 90, 0.9),
-              (-5, -5): pg.transform.rotozoom(kk_img, -45, 0.9),}
-    return angles[sum_mv]
+    kk_imgs = {(-5, 0): pg.transform.rotozoom(kk_img, 0, 0.9), 
+               (-5, 5): pg.transform.rotozoom(kk_img, 45, 0.9), 
+               (0, 5): pg.transform.rotozoom(kk_img_inverted, -90, 0.9), 
+               (5, 5): pg.transform.rotozoom(kk_img_inverted, -45, 0.9),
+               (5, 0): pg.transform.rotozoom(kk_img_inverted, 0, 0.9),
+               (5, -5): pg.transform.rotozoom(kk_img_inverted, 45, 0.9),
+               (0, -5): pg.transform.rotozoom(kk_img_inverted, 90, 0.9),
+               (-5, -5): pg.transform.rotozoom(kk_img, -45, 0.9),}
+    return kk_imgs[sum_mv]
 
 def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
     dx = dst.centerx - org.centerx
